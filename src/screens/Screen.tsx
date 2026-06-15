@@ -9,9 +9,10 @@ type Props = PropsWithChildren<{
   title?: string;
   subtitle?: string;
   protectedRoute?: boolean;
+  scrollable?: boolean;
 }>;
 
-export function Screen({ title, subtitle, protectedRoute, children }: Props) {
+export function Screen({ title, subtitle, protectedRoute, scrollable = true, children }: Props) {
   const { loading, signedIn } = useAuth();
 
   useEffect(() => {
@@ -28,13 +29,21 @@ export function Screen({ title, subtitle, protectedRoute, children }: Props) {
     );
   }
 
+  const body = (
+    <>
+      {title ? <Text style={styles.title}>{title}</Text> : null}
+      {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
+      {children}
+    </>
+  );
+
   return (
     <KeyboardAvoidingView style={styles.fill} behavior={Platform.OS === "ios" ? "padding" : "height"}>
-      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-        {title ? <Text style={styles.title}>{title}</Text> : null}
-        {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
-        {children}
-      </ScrollView>
+      {scrollable ? (
+        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">{body}</ScrollView>
+      ) : (
+        <View style={styles.staticContent}>{body}</View>
+      )}
     </KeyboardAvoidingView>
   );
 }
@@ -42,6 +51,7 @@ export function Screen({ title, subtitle, protectedRoute, children }: Props) {
 const styles = StyleSheet.create({
   fill: { flex: 1, backgroundColor: theme.colors.background },
   content: { flexGrow: 1, padding: theme.spacing.lg },
+  staticContent: { flex: 1 },
   title: { color: theme.colors.text, fontSize: 28, fontWeight: "800", marginTop: 18 },
   subtitle: { color: theme.colors.muted, marginTop: 6, marginBottom: 20 },
 });

@@ -1,3 +1,6 @@
-import { ChatScreen } from "../../src/screens/ChatScreen";
+import { Redirect, useLocalSearchParams } from "expo-router";
 
-export default ChatScreen;
+export default function LegacyChatRedirect() {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  return <Redirect href={`/solicitacoes/${id}`} />;
+}

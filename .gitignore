@@ -7,6 +7,10 @@ node_modules/
 # Expo
 .expo/
 dist/
+build/
+coverage/
+playwright-report/
+test-results/
 web-build/
 expo-env.d.ts
 
@@ -26,9 +30,14 @@ expo-env.d.ts
 npm-debug.*
 yarn-debug.*
 yarn-error.*
+*.log
+*.tmp
+*.swp
 
 # macOS
 .DS_Store
+Thumbs.db
+.idea/
 *.pem
 
 # local env files

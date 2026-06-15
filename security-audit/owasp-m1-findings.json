@@ -1,0 +1,24 @@
+[
+  {
+    "id": "VULN-M1-001",
+    "categoria": "OWASP M1 - Improper Credential Usage",
+    "arquivo": "src/api/storage.ts",
+    "linha": "1, 8-15",
+    "risco": "Alto",
+    "status": "Não resolvido",
+    "evidencia": "AsyncStorage.multiSet([[TOKEN_KEY, auth.Token], ...]); e AsyncStorage.getItem(TOKEN_KEY).",
+    "causa": "O token bearer é persistido em AsyncStorage, que não oferece armazenamento criptográfico equivalente ao Keychain/Keystore.",
+    "correcao": "Armazenar o token em expo-secure-store ou react-native-keychain e manter somente dados não sensíveis em AsyncStorage. Exemplo: await SecureStore.setItemAsync(TOKEN_KEY, auth.Token, { keychainAccessible: SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY });"
+  },
+  {
+    "id": "VULN-M1-002",
+    "categoria": "OWASP M1 - Improper Credential Usage",
+    "arquivo": "src/api/storage.ts",
+    "linha": "9-12, 17-22",
+    "risco": "Médio",
+    "status": "Não resolvido",
+    "evidencia": "JSON.stringify(auth.Usuario) é persistido em AsyncStorage; UsuarioDto contém NomeCompleto, Email e Telefone em src/types.ts:3-12.",
+    "causa": "O perfil completo do usuário é tratado como cache comum, sem minimização nem criptografia.",
+    "correcao": "Não persistir PII desnecessária; buscar o perfil após autenticação ou proteger o mínimo indispensável com armazenamento seguro e política de expiração."
+  }
+]
