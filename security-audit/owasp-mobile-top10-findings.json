@@ -1,0 +1,57 @@
+[
+  {
+    "id": "VULN-M9-001",
+    "categoria": "M9 - Armazenamento de Dados Inseguro / M1 - Uso Improprio de Credenciais",
+    "arquivo": "src/api/storage.ts",
+    "linha": 9,
+    "risco": "Critico",
+    "evidencia": "Token JWT e UsuarioDto eram persistidos em AsyncStorage em texto claro.",
+    "causa": "Sessao sensivel persistida em armazenamento local nao criptografado.",
+    "correcao": "Substituida persistencia por sessao em memoria e limpeza dos dados legados em AsyncStorage.",
+    "status": "Corrigido"
+  },
+  {
+    "id": "VULN-M5-001",
+    "categoria": "M5 - Comunicacao de Rede Insegura",
+    "arquivo": "src/api/client.ts",
+    "linha": 6,
+    "risco": "Alto",
+    "evidencia": "EXPO_PUBLIC_API_URL aceitava HTTP sem bloqueio de ambiente.",
+    "causa": "Ausencia de validacao de esquema HTTPS para builds de producao.",
+    "correcao": "Adicionada validacao que rejeita API HTTP em NODE_ENV=production; realtime tambem exige HTTPS/WSS.",
+    "status": "Corrigido"
+  },
+  {
+    "id": "VULN-M4-001",
+    "categoria": "M4 - Validacao de Entrada Insuficiente",
+    "arquivo": "src/services/anexoService.ts",
+    "linha": 9,
+    "risco": "Alto",
+    "evidencia": "Upload aceitava nome, extensao e MIME informados pelo dispositivo sem validacao central.",
+    "causa": "Validacao limitada apenas a tamanho do arquivo na tela.",
+    "correcao": "Criada validacao por tamanho, extensoes e MIME permitidos; nomes de arquivo sao sanitizados antes de upload/download.",
+    "status": "Corrigido"
+  },
+  {
+    "id": "VULN-M3-001",
+    "categoria": "M3 - Autenticacao e Autorizacao Inseguras",
+    "arquivo": "src/screens/CadastroScreen.tsx",
+    "linha": 39,
+    "risco": "Alto",
+    "evidencia": "Cadastro aceitava senhas com apenas 6 caracteres.",
+    "causa": "Politica de senha fraca e sem complexidade minima no cliente.",
+    "correcao": "Adicionada politica minima de 8 caracteres com minuscula, maiuscula, numero e caractere especial.",
+    "status": "Corrigido"
+  },
+  {
+    "id": "VULN-M2-001",
+    "categoria": "M2 - Supply Chain Insegura",
+    "arquivo": "package.json",
+    "linha": 17,
+    "risco": "Alto",
+    "evidencia": "npm audit apontava axios 1.15.1 vulneravel e form-data <4.0.6 com CRLF injection.",
+    "causa": "Dependencias diretas/transitivas abaixo das versoes corrigidas.",
+    "correcao": "Atualizado axios para ^1.18.0 e fixada resolucao de form-data em ^4.0.6.",
+    "status": "Corrigido"
+  }
+]

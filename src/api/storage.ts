@@ -4,24 +4,34 @@ import { AuthResponse, UsuarioDto } from "../types";
 const TOKEN_KEY = "@ProjetoTCC:token";
 const USER_KEY = "@ProjetoTCC:usuario";
 
+let memoryToken: string | null = null;
+let memoryUser: UsuarioDto | null = null;
+
+async function removeLegacyPersistentSession() {
+  await AsyncStorage.multiRemove([TOKEN_KEY, USER_KEY]);
+}
+
 export const authStorage = {
   async save(auth: AuthResponse) {
-    await AsyncStorage.multiSet([
-      [TOKEN_KEY, auth.Token],
-      [USER_KEY, JSON.stringify(auth.Usuario)],
-    ]);
+    memoryToken = auth.Token;
+    memoryUser = auth.Usuario;
+    await removeLegacyPersistentSession();
   },
   async getToken() {
-    return AsyncStorage.getItem(TOKEN_KEY);
+    await removeLegacyPersistentSession();
+    return memoryToken;
   },
   async getUser(): Promise<UsuarioDto | null> {
-    const value = await AsyncStorage.getItem(USER_KEY);
-    return value ? (JSON.parse(value) as UsuarioDto) : null;
+    await removeLegacyPersistentSession();
+    return memoryUser;
   },
   async setUser(usuario: UsuarioDto) {
-    await AsyncStorage.setItem(USER_KEY, JSON.stringify(usuario));
+    memoryUser = usuario;
+    await removeLegacyPersistentSession();
   },
   async clear() {
-    await AsyncStorage.multiRemove([TOKEN_KEY, USER_KEY]);
+    memoryToken = null;
+    memoryUser = null;
+    await removeLegacyPersistentSession();
   },
 };

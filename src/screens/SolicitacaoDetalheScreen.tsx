@@ -28,7 +28,7 @@ import type {
   TarefaDto,
   TarefaStatus,
 } from "../types";
-import { getErrorMessage } from "../utils/validation";
+import { getErrorMessage, validateSelectedFile } from "../utils/validation";
 import { Screen } from "./Screen";
 
 export function SolicitacaoDetalheScreen() {
@@ -120,7 +120,8 @@ export function SolicitacaoDetalheScreen() {
       const result = await DocumentPicker.getDocumentAsync({ multiple: false, copyToCacheDirectory: true });
       if (result.canceled) return;
       const selected = result.assets[0];
-      if ((selected.size ?? 0) > 25 * 1024 * 1024) throw new Error("O arquivo deve ter no maximo 25 MB.");
+      const fileError = validateSelectedFile(selected);
+      if (fileError) throw new Error(fileError);
       setUploading(true);
       const midia = await anexoService.upload(solicitacaoId, selected);
       await enviarMensagem(`Arquivo anexado: **${midia.NomeArquivo}**`, midia.MidiaId);

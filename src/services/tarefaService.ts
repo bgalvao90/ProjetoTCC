@@ -67,6 +67,7 @@ export const tarefaService = {
     const { data } = await api.put<TarefaDto>(
       `/solicitacoes/${solicitacaoId}/tarefas/${tarefaId}/status`,
       novoStatusId,
+      { headers: { "Content-Type": "application/json" } },
     );
     return data;
   },

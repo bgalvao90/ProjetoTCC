@@ -9,7 +9,7 @@ import { authService } from "../services/authService";
 import { universidadeService } from "../services/universidadeService";
 import { CadastroRequest, UniversidadeDto } from "../types";
 import { getUniversidadeId } from "../utils/universidade";
-import { getErrorMessage, isEmail } from "../utils/validation";
+import { getErrorMessage, isEmail, validatePassword } from "../utils/validation";
 import { Screen } from "./Screen";
 
 export function CadastroScreen() {
@@ -36,7 +36,8 @@ export function CadastroScreen() {
   async function handleCadastro() {
     if (!form.NomeCompleto || !form.Telefone || !form.Senha) return Alert.alert("Erro", "Preencha todos os campos obrigatorios.");
     if (!isEmail(form.Email)) return Alert.alert("Erro", "Informe um email valido.");
-    if (form.Senha.length < 6) return Alert.alert("Erro", "A senha deve ter pelo menos 6 caracteres.");
+    const passwordError = validatePassword(form.Senha);
+    if (passwordError) return Alert.alert("Erro", passwordError);
     if (!form.UniversidadeId) return Alert.alert("Erro", "Selecione uma universidade.");
     const request: CadastroRequest = { ...form, UniversidadeId: form.UniversidadeId, FotoPerfilMidiaId: null };
     try {

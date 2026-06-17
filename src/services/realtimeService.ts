@@ -12,6 +12,9 @@ export const realtimeService = {
   async conectar(solicitacaoId: number, onChanged: () => void) {
     const apiBaseUrl = process.env.EXPO_PUBLIC_API_URL;
     if (!apiBaseUrl) throw new Error("EXPO_PUBLIC_API_URL nao configurada.");
+    if (process.env.NODE_ENV === "production" && !apiBaseUrl.startsWith("https://")) {
+      throw new Error("Tempo real exige HTTPS/WSS em producao.");
+    }
     if (!connection) {
       connection = new HubConnectionBuilder()
         .withUrl(`${apiBaseUrl}/hubs/projetotcc`, {

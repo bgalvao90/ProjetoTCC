@@ -3,8 +3,16 @@ import { authStorage } from "./storage";
 
 const apiBaseUrl = process.env.EXPO_PUBLIC_API_URL;
 
-if (!apiBaseUrl) {
-  console.warn("Defina EXPO_PUBLIC_API_URL no seu arquivo .env.local para conectar na API.");
+function validateApiBaseUrl() {
+  if (!apiBaseUrl) {
+    throw new Error("Configure EXPO_PUBLIC_API_URL antes de chamar a API.");
+  }
+
+  const parsed = new URL(apiBaseUrl);
+  if (process.env.NODE_ENV === "production" && parsed.protocol !== "https:") {
+    throw new Error("EXPO_PUBLIC_API_URL deve usar HTTPS em producao.");
+  }
+  return apiBaseUrl;
 }
 
 export const api = axios.create({
@@ -19,9 +27,7 @@ export function setUnauthorizedHandler(handler: (() => void) | null) {
 }
 
 api.interceptors.request.use(async (config) => {
-  if (!apiBaseUrl) {
-    return Promise.reject(new Error("Configure EXPO_PUBLIC_API_URL no arquivo .env.local antes de chamar a API."));
-  }
+  validateApiBaseUrl();
 
   const token = await authStorage.getToken();
   if (token) {
